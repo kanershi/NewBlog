@@ -1,11 +1,9 @@
 name: "Karen Nershi"
 navbar:
-  title: "About Me"
+  title: "Karen Nershi"
   left:
     - text: "Home"
       href: index.html
     - text: "Blog"
       href: Journal.html
-    - text: "Links"
-      href: Links.html
 output_dir: "docs"

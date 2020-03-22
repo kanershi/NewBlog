@@ -1,5 +1,7 @@
 ---
-title: "Journal"
+title: "COVID-19 Mortality and Testing Rates by Country"
+author: "Karen Nershi"
+date: "3/19/2020"
 output:
   html_document:
     toc: true
@@ -9,120 +11,221 @@ output:
     toc_depth: 1
     #code_folding: hide
 ---
+Recently, I read [Andreas Backhaus's great post](https://medium.com/@andreasbackhausab/coronavirus-why-its-so-deadly-in-italy-c4200a15a7bf) about the age distribution of COVID-19 cases across South Korea and Italy. In short, South Korea shows a higher proportion of young people with the virus, with 30% of the nation's cases between the ages of 20 and 29. Italy, meanwhile, has a distribution of cases much more heavily skewed toward the elderly, which does not mirror the broader population. This difference can help explain why South Korea has a vastly different mortality rate than Italy -- just under 1% compared to Italy's 8.3% based on the [latest data](https://coronavirus.jhu.edu/map.html). But why is there a vastly diffferent age distribution across COVID-19 cases between the two countries?
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
+One clear reason is the difference in testing between the two countries. South Korea has tested more capita -- 5,567 tests per million -- compared to Italy's 2,514 tests per million. This shows that South Korea has carried out 2.1 times as many tests relative to its population as Italy. Since South Korea has tested more widely and shows a broader distribution of cases across age groups, this suggests that Italy's outbreak actually includes many more young people who are not currently represented in the official data. This could explain why Italy's mortality rate appears high compared to other countries', as the denominator of official cases likely does not include a large number of young people who show mild symptoms.
+
+### Global Testing
+
+Although not all countries publish data on the number of COVID-19 cases they test, [Our World in Data](https://ourworldindata.org/coronavirus) provides data for the ones that do.The data shows a great deal of variation across countries, ranging from 2.55 tests per million in Pakistan to 27,888 tests per million in Kuwait. The United States has tested relatively few cases so far, with 64 tests for every million citizens. The map below shows the number of COVID-19 tests per million for available countries.
+```{r, include=FALSE}
+load("df.RData")
+
+library(rworldmap)
+
+mapped_data <- joinCountryData2Map(df, joinCode = "ISO3", nameJoinColumn = "ccode")
+
+library(RColorBrewer)
+colourPalette <- RColorBrewer::brewer.pal(7,'Greens')
 ```
 
-IMPORTANT: You can delete everything in here and start fresh. You might want to start by not deleting anything above this line until you know what that stuff is doing.
 
+```{r cars, echo=FALSE, message=F, warning=F, error=F}
 
-This is an .Rmd file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a \# in front of your text, it will create a top level-header.
+par(mai=c(.5,0,1,0),xaxs="i",yaxs="i")
+mapParams <- mapCountryData(mapped_data, 
+                            nameColumnToPlot = "Total.COVID.19.tests.per.million.people",
+                            mapTitle = "COVID-19 Tests per Million",
+                            addLegend = F,
+                            borderCol = "black",
+                            colourPalette = colourPalette) 
 
-# My first post
-
-2018 | 7 | 23 Last compiled: `r Sys.Date()`
-
-Notice that whatever you define as a top level header, automatically gets put into the table of contents bar on the left. 
-
-## Second level header
-
-You can add more headers by adding more hashtags. These won't be put into the table of contents
-
-### third level header
-
-Here's an even lower level header
-
-# My second post (note the order)
-
-2018 | 7 | 23 Last compiled: `r Sys.Date()`
-
-I'm writing this tutorial going from the top down. And, this is how it will be printed. So, notice the second post is second in the list. If you want your most recent post to be at the top, then make a new post starting at the top. If you want the oldest first, do, then keep adding to the bottom
-
-# Adding R stuff
-
-So far this is just a blog where you can write in plain text and serve your writing to a webpage. One of the main purposes of this lab journal is to record your progress learning R. The reason I am asking you to use this process is because you can both make a website, and a lab journal, and learn R all in R-studio. This makes everything really convenient and in the sam place. 
-
-So, let's say you are learning how to make a histogram in R. For example, maybe you want to sample 100 numbers from a normal distribution with mean = 0, and standard deviation =1, and then you want to plot a histogram. You can do this right here by using an r code block, like this:
-
-```{r}
-samples <- rnorm(100, mean=0, sd=1)
-hist(samples)
+do.call(addMapLegend, c(mapParams, legendLabels="all",
+                        legendWidth=0.5,
+                        legendIntervals="data",
+                        legendShrink=0.6,
+                        legendMar=3))
 ```
 
-When you knit this R Markdown document, you will see that the histogram is printed to the page, along with the R code. This document can be set up to hide the R code in the webpage, just delete the comment (hashtag), from the cold folding option in the yaml header up top. For purposes of letting yourself see the code, and me see the code, best to keep it the way that it is. You learn all of these things and more can be customized in each R code block.
+In Europe, which currently has the highest number of COVID-19 cases globally, Iceland, Norway, and Sweden have conducted the most per capita tests at over 3,000 tests per million, while Ukraine, Finland, Hungary, and France have all conducted fewer than 170 tests per million.
 
-# The big idea
+```{r, include=FALSE}
+load("small.RData")
 
-Use this lab journal to record what you do in R. This way I will be able to see what you are doing and help you along the way. You will also be creating a repository of all the things you do. You can make posts about everything. Learning specific things in R (project unrelated), and doing things for the project that we will discuss at the beginning of the Fall semester. You can get started now by fiddling around with googling things, and trying stuff out in R. I've placed some helpful starting links in the links page on this website
+library(rworldmap)
 
-# What can you do right now by yourself?
+mapped_data <- joinCountryData2Map(small, joinCode = "ISO3", nameJoinColumn = "ccode")
 
-It's hard to learn programming when you don't have specific problems that you are trying to solve. Everything just seems abstract.
+library(RColorBrewer)
+colourPalette <- RColorBrewer::brewer.pal(7,'Greens')
+```
 
-I wrote an [introductory programming book that introduces R](https://crumplab.github.io/programmingforpsych/), and gives some [concrete problems for you to solve](https://crumplab.github.io/programmingforpsych/programming-challenges-i-learning-the-fundamentals.html). 
 
-To get the hang of journaling and solving the problems to learn programming, my suggestion is that you use this .Rmd file to solve the problems. It would look like this:
+```{r, echo=F, output=F}
+mapParams <- mapCountryData(mapped_data, 
+                            nameColumnToPlot = "Total.COVID.19.tests.per.million.people",
+                            mapTitle = "COVID-19 Tests per Million in Europe",
+                            addLegend = F,
+                            borderCol = "black",
+                            mapRegion = 'europe',
+                            colourPalette = colourPalette) 
 
-# Problem 1
+do.call(addMapLegend, c(mapParams, legendLabels="all",
+                        legendWidth=0.5,
+                        legendIntervals="data",
+                        legendShrink=0.6,
+                        legendMar=2))
+```
 
-Do simple math with numbers, addition, subtraction, multiplication, division
 
-```{r}
-1+2
-2*5
-5/3
-(1+6+4)/5
+### Confirmed Cases 
+
+Confirmed cases, meanwhile, are highly concentrated in Europe. Iceland and Italy top the chart with 6,637 and 2,514 cases per million respectively. What does the relationship between tested and confirmed cases across countries tell us?
+
+```{r, include=FALSE}
+mapped_data <- joinCountryData2Map(df, joinCode = "ISO3", nameJoinColumn = "ccode")
+library(RColorBrewer)
+colourPalette <- RColorBrewer::brewer.pal(7,'YlOrRd')
+```
+
+
+```{r echo=F, message=FALSE, warning=FALSE}
+par(mai=c(.5,0,1,0),xaxs="i",yaxs="i")
+
+mapParams <- mapCountryData(mapped_data, 
+                            nameColumnToPlot = "Total.confirmed.cases.of.COVID.19.per.million.people",
+                            mapTitle = "COVID-19 Confirmed Cases per Million",
+                            addLegend = F,
+                            borderCol = "black",
+                            colourPalette = colourPalette) 
+
+do.call(addMapLegend, c(mapParams, legendLabels="all",
+                        legendWidth=0.5,
+                        legendIntervals="data",
+                        legendShrink=0.6,
+                        legendMar=3))
+```
+
+### Rate of Confirmed Cases
+One way to consider this relationship is look at what percentage of tested cases are confirmed as positive cases. Italy had the highest percentage of confirmed cases from those tested (18.8%), followed by the Philippines (18.1%), France (12.7%), Denmark (12.6%), and Austria (11.0%). The United States ranked 20 out of the 48 countries, with 4.0% of all tested cases confirmed COVID-19 cases. South Korea, which has been widely praised for its response to the crisis, had 2.9% of all tested cases confirmed as active cases.
+
+```{r, include=FALSE}
+load('ratio.RData')
+
+library(rworldmap)
+
+mapped_data <- joinCountryData2Map(rat, joinCode = "ISO3", nameJoinColumn = "ccode")
+
+library(RColorBrewer)
+colourPalette <- RColorBrewer::brewer.pal(7,'YlOrRd')
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+par(mai=c(.5,0,1,0),xaxs="i",yaxs="i", cex=1)
+
+suppressWarnings(mapParams <- mapCountryData(mapped_data, 
+                            nameColumnToPlot = "rate_confirmed",
+                            mapTitle = "Rate of Confirmed Cases for Tested COVID-19 Cases",
+                            addLegend = F,
+                            borderCol = "black",
+                            colourPalette = colourPalette))
+
+suppressWarnings(do.call(addMapLegend, c(mapParams, legendLabels="all",
+                        legendWidth=0.5,
+                        legendIntervals="data",
+                        legendShrink=0.6,
+                        legendMar=3)))
+```
+
+Interpreting this rate, however, is tricky. A country could have a high rate of confirmed cases if it is not testing widely, which would indicate many more undiagnosed cases for each confirmed case. On the other hand, countries may test all individuals in contact with sick people, in which case a high rate would signal a high level of effectiveness (i.e., countries find and test sick people). Without knowing each country's testing strategy, it is difficult to understand what this rate means for how countries are testing for COVID-19.
+
+### Testing and Mortality Rates
+
+Since many COVID-19 patients show mild or moderate symptoms, the more widely a country tests, the lower the mortality rate will appear. It is also important to note that it takes a while for COVID-19 to kill patients, so countries that are early in the pandemic will typically have artificially low mortality rate since they will have many diagnosed cases but few deaths... *yet.* Thus, this data does not tell the whole story as it compares countries at different stages, while a fair comparison would compare mortality and testing rates after the pandemic has run its course.
+
+These qualifications aside, we can see that most countries are not testing much (relative to their population), while a few countries are testing a lot. The data also shows the expected relationship -- countries that test more appear to have lower mortality rates, like South Korea. Again, this is likely a statistical issue more than anything. Although some individuals have suffered adverse health outcomes because they were not diagnosed early, this trend at the national level more likely indicates that countries with lower levels of testing appear to have higher mortality rates because people with milder symptoms are not included in the official statistics.
+
+```{r, echo=F, warning=F, error=F, message=F}
+load('full.RData')
+
+full$mortality_rate <- full$mortality_rate*100
+
+library(ggplot2)
+library(ggrepel)
+ggplot(full, aes(full$mortality_rate, full$Total.COVID.19.tests.per.million.people,
+                        label=Entity.x)) + 
+  geom_smooth() +
+  geom_point() +
+  geom_label_repel(aes(label = Entity.x),
+                   box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50') +
+  theme_classic() + 
+  xlab("Mortality Rate (%)") + 
+  ylab("COVID-19 Tests per Million") +
+  ggtitle('Tests per Million vs. Mortality Rate (%)') + 
+  theme(plot.title = element_text(hjust = 0.5))
 
 ```
 
-# Problem 2
+### National Healthcare Systems
+Finally, the quality of a nation's healthcare system also plays an important role in determining both mortality rates and testing. Although most cases today are in developed countries with advanced healthcare systems, there is still important variation across the countries. Below are the number of doctors and hospital beds per 1,000 people from [World Bank data](https://data.worldbank.org/indicator/SH.MED.PHYS.ZS) (for 2010 and 2011 respectively.)
 
-Put numbers into variables, do simple math on the variables
+```{r, include=F}
+load('/Users/karenner/Box/Spring 2020/March/GitHub/NewBlog/beds.RData')
 
-```{r}
-a<-1
-b<-2
-a+b
+library(rworldmap)
 
-d<-c(1,2,3)
-e<-c(5,6,7)
-d+e
-d*e
-d/e
+mapped_data <- joinCountryData2Map(beds, joinCode = "ISO3", nameJoinColumn = "Country.Code")
 
+library(RColorBrewer)
+colourPalette <- RColorBrewer::brewer.pal(7,'PuBu')
 ```
 
-# Problem 3
+```{r, echo=F, warning=F}
+par(mai=c(.5,0,1,0),xaxs="i",yaxs="i", cex=1.5)
 
-Write code that will place the numbers 1 to 100 separately into a variable using for loop. Then, again using the seq function.
+mapParams <- mapCountryData(mapped_data, 
+                            nameColumnToPlot = "X2011",
+                            mapTitle = "Hospital Beds per 1,000 People (2011)",
+                            addLegend = F,
+                            borderCol = "black",
+                            colourPalette = colourPalette) 
 
-```{r}
-# for loop solution
-# i becomes the number 1 to 100 at each step of the loop
-
-
-a <- length(100) # make empty variable, set length to 100
-for (i in 1:100){
-  a[i] <-i #assigns the number in i, to the ith index of a
-}
-
-print(a)
-
-# for loop solution #2
-
-a<-c() #create empty variable using combine command
-for (i in 1:100){
-  a<-c(a,i) # keeps combining a with itself and the new number in i
-}
-print(a)
-
-# seq solution
-a <- seq(1,100,1) # look up help for seq using ?seq() in console
-print(a)
-
+do.call(addMapLegend, c(mapParams, legendLabels="all",
+                        legendWidth=0.5,
+                        legendIntervals="data",
+                        legendShrink=0.6,
+                        legendMar=3))
 ```
 
-# Replace this with problem 4
+```{r, include=F}
+load('docs.RData')
 
-And keep going. Try to solve the problems with different scripts that provide the same solution. Good luck, Happy coding.
+library(rworldmap)
+
+mapped_data <- joinCountryData2Map(docs, joinCode = "ISO3", nameJoinColumn = "Country.Code")
+
+library(RColorBrewer)
+colourPalette <- RColorBrewer::brewer.pal(7,'PuBu')
+```
+
+```{r, echo=F, warning=F}
+par(mai=c(.5,0,1,0),xaxs="i",yaxs="i", cex=1.5)
+
+mapParams <- mapCountryData(mapped_data, 
+                            nameColumnToPlot = "X2010",
+                            mapTitle = "Doctors per 1,000 People (2010)",
+                            addLegend = F,
+                            borderCol = "black",
+                            colourPalette = colourPalette) 
+
+do.call(addMapLegend, c(mapParams, legendLabels="all",
+                        legendWidth=0.5,
+                        legendIntervals="data",
+                        legendShrink=0.6,
+                        legendMar=3))
+```
+
+Countries also differ in median age, which affects mortality rates, and may differ in other important ways not captured here. However, the wide variation in testing suggests that there can be significant differences in the types of COVID-19 across countries despite their reported number of cases. These testing differences help explain diverging COVID-19 mortality rates across countries.
